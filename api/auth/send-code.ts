@@ -34,7 +34,7 @@ export default async function handler(
         "api-key": process.env.BREVO_API_KEY!,
       },
       body: JSON.stringify({
-        sender: { email: process.env.BREVO_SENDER },
+        sender: { email:"gujinlongdinda@gmail.com",name: "zhibi" },
         to: [{ email }],
         subject: "登录验证码",
         htmlContent: `<p>你的验证码是 <b>${code}</b></p>`,
@@ -46,3 +46,4 @@ export default async function handler(
     return res.status(500).json({ message: "发送失败" });
   }
 }
+
