@@ -1,49 +1,40 @@
-import type { VercelRequest, VercelResponse } from "vercel";
+import type { VercelRequest, VercelResponse } from "@vercel/node";
 
 export default async function handler(
   req: VercelRequest,
   res: VercelResponse
 ) {
-  // ✅ CORS 处理（最关键的地方）
-  res.setHeader("Access-Control-Allow-Origin", "*");
+  /* ======== CORS 核心配置 ======== */
+  res.setHeader("Access-Control-Allow-Origin", "https://www.hao6v.cc");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
 
-  // ✅ 处理预检请求（浏览器自动发的）
+  // ✅ 必须处理 OPTIONS（浏览器预检）
   if (req.method === "OPTIONS") {
     return res.status(200).end();
   }
 
+  // ❌ 只允许 POST
   if (req.method !== "POST") {
-    return res.status(405).json({ message: "Method Not Allowed" });
-  }
-
-  const { email } = req.body;
-
-  if (!email) {
-    return res.status(400).json({ message: "缺少邮箱" });
+    return res.status(405).json({ error: "Method not allowed" });
   }
 
   try {
-    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    const { email } = req.body;
 
-    await fetch("https://api.brevo.com/v3/smtp/email", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "api-key": process.env.BREVO_API_KEY!,
-      },
-      body: JSON.stringify({
-        sender: { email:"gujinlongdinda@gmail.com",name: "zhibi" },
-        to: [{ email }],
-        subject: "登录验证码",
-        htmlContent: `<p>你的验证码是 <b>${code}</b></p>`,
-      }),
+    if (!email) {
+      return res.status(400).json({ error: "Email is required" });
+    }
+
+    // ===== 这里先不调用 Brevo，用假数据测试 =====
+    console.log("准备发送验证码给：", email);
+
+    return res.status(200).json({
+      message: "验证码已发送（测试成功）",
     });
-
-    return res.status(200).json({ message: "验证码已发送" });
-  } catch (err) {
-    return res.status(500).json({ message: "发送失败" });
+  } catch (err: any) {
+    console.error("发送失败:", err);
+    return res.status(500).json({ error: "Server error" });
   }
 }
-
