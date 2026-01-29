@@ -5,7 +5,7 @@ export default async function handler(
   res: VercelResponse
 ) {
   /* ======== CORS 核心配置 ======== */
-  res.setHeader("Access-Control-Allow-Origin", "https://www.hao6v.cc");
+  res.setHeader("Access-Control-Allow-Origin", "https://5wbd98kqhk.coze.site/");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
   res.setHeader("Access-Control-Allow-Credentials", "true");
@@ -38,3 +38,4 @@ export default async function handler(
     return res.status(500).json({ error: "Server error" });
   }
 }
+
